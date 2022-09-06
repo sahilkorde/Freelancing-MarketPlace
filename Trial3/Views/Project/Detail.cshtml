@@ -1,0 +1,34 @@
+﻿@model Project
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="container">
+    
+    <div class="border shadow-lg border-info p-3 mt-4" style="border-radius: 25px;">
+        <div class="mb-3">
+            <h3>@Model.ProjectName</h3>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                @{
+                    var user = await UserManager.FindByIdAsync(Model.EmployerId);
+                 }
+                 created by : @user.UserName
+            </div>
+            <div class="col-6 text-end">
+                @Model.CreateTime
+            </div>
+        </div>
+        
+        <hr />
+        <div class="mb-3">
+            @Model.Description
+        </div>
+        <a asp-controller="project" asp-action="makeBid" asp-route-projectid="@Model.projectId" class="btn btn-secondary" style="width:150px">Make a bid</a>
+    </div>
+</div>

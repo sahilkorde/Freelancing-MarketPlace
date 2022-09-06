@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Project>
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "UserProject";
+}
+
+<h1>UserProject</h1>
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-dark">project list</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="project" asp-action="Create" class="btn btn-dark">
+                <i class="bi bi-plus-circle-fill"></i> Create Category
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+    @if(Model.Any()){
+        @foreach(var obj in Model){
+        <div class="border shadow-lg border-info p-3 mt-4" style="border-radius: 25px;" >
+        <div class="mb-3" onclick="location.href = '@Url.Action("ProjectBidDetail","Project",new { id = obj.projectId})'">
+            <h3>@obj.ProjectName</h3>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                @{
+                    var user = await UserManager.FindByIdAsync(obj.EmployerId);
+                 }
+                 created by : @user.UserName
+            </div>
+            <div class="col-6 text-end">
+                @obj.CreateTime
+            </div>
+        </div>
+        
+        <hr />
+        <div class="mb-3">
+            @{
+                int startIndex = 0;
+                int length = 150;
+                string value = @obj.Description;
+                string shortdisc = value.Substring(startIndex, length);
+            }
+            @shortdisc
+        </div>
+        <a asp-controller="Project" asp-action="Edit" asp-route-projId="@obj.projectId" class="btn btn-primary"><i class="bi bi-pencil-square"></i>Edit</a>
+        <a asp-controller="Project" asp-action="Delete" asp-route-projId="@obj.projectId" class="btn btn-primary"><i class="bi bi-trash"></i>Delete</a>
+        </div>
+
+            }
+        }
+        else
+        {
+            <div class="card">
+            <div class="card-header">
+                No Projects Yet
+            </div>
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    Use The button below to create a Project
+                </h5>
+                <a class="btn btn-primary" style="width:auto" asp-controller="Project" asp-action="create">Create Project</a>
+            </div>
+
+        </div>
+        }
+
+    </div>
+</div>
+

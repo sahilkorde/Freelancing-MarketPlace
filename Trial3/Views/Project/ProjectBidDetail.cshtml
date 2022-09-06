@@ -1,0 +1,72 @@
+﻿@model ProjectBidView
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "ProjectBidDetail";
+}
+
+<h1>ProjectBidDetail</h1>
+
+<div class="container">
+    
+    <div class="border shadow-lg border-info p-3 mt-4" style="border-radius: 25px;">
+        <div class="mb-3">
+            <h3>@Model.Projects.ProjectName</h3>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                @{
+                    var user = await UserManager.FindByIdAsync(Model.Projects.EmployerId);
+                 }
+                 created by : @user.UserName
+            </div>
+            <div class="col-6 text-end">
+                @Model.Projects.CreateTime
+            </div>
+        </div>
+        
+        <hr />
+        <div class="mb-3">
+            @Model.Projects.Description
+        </div>
+    </div>
+    @if (Model.Bids.Any())
+    {
+        <div class="border shodow-sm border-success p-3 mt-4">
+        <div class="mb-3">
+            @foreach(var bids in Model.Bids)
+            {
+                <div class="card">
+                    <div class="card-header border-1">
+                        Rs. <h4>@bids.BidPrice</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            @bids.Discription
+                            <br>
+                             @{
+                                var freelancer = await UserManager.FindByIdAsync(bids.FreelancerId);
+                              }
+                            by : @freelancer
+                        </div>
+                        <div>
+                            <a asp-controller="user" asp-action="Acceptbid" asp-route-bidId="@bids.BidId" class="btn btn-primary"><i class="bi bi-trash"></i>Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    }
+    else
+        {
+            <div class="card">
+            <div class="card-header">
+                No Bids Yet
+            </div>
+        </div>
+        }
+    
+</div>

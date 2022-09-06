@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Bid>
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@using Trial3.Models
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "UserBids";
+}
+
+<h1>UserBids</h1>
+
+<div class="">
+    <div class="">
+        @foreach(var bids in Model)
+        {
+            <div class="card mb-2 col-lg-5">
+                <div class="card-header border-1 row">
+                    <div class="col-4">Rs. <h4>@bids.BidPrice</h4></div>
+                    <div class="col-4">@bids.status</div>
+                    <div class="col-4"><a href="/Project/detail/@bids.ProjectId">view Project</a></div>
+                    
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        @bids.Discription<br>
+                        @{
+                            var freelancer = await UserManager.FindByIdAsync(bids.FreelancerId);
+                        }
+                        by : @freelancer
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+ </div>

@@ -1,0 +1,52 @@
+﻿@model Project
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Edit</h1>
+<div class="container-fluid">
+    <form method="post">
+    <div class="border border-5 disabled p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="">Edit Project</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="mb-3" hidden>
+            <label asp-for="projectId">Name</label>
+            <input asp-for="projectId" class="form-control fs-1 text-info" value="@Model.projectId"/>
+            <span asp-validation-for="projectId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProjectName">Name</label>
+            <input asp-for="ProjectName" class="form-control fs-1 text-info" />
+            <span asp-validation-for="ProjectName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description">Description</label>
+            <textarea asp-for="Description" rows="10" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Status">status</label>
+            <input asp-for="Status" class="form-control" />
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="tags">status</label>
+            <input asp-for="tags" class="form-control" />
+            <span asp-validation-for="tags" class="text-danger"></span>
+        </div>
+        <div class="mb-3" hidden>
+            <label asp-for="EmployerId">EmployerId</label>
+            <input asp-for="EmployerId" class="form-control" value="@UserManager.GetUserId(User)"/>
+            <span asp-validation-for="EmployerId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success" style="width:150px">Update</button>
+        <a asp-controller="Project" asp-action="Index" class="btn btn-secondary" style="width:150px">Back To List</a>
+    </div>
+</form>
+</div>

@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Project>
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-4">
+            <h2 class="text-dark">project list</h2>
+        </div>
+        <div class="col-4 text-center">
+            <a asp-controller="project" asp-action="userProject" asp-route-id="@UserManager.GetUserId(User)" class="btn btn-dark">
+                go to my project
+            </a>
+        </div>
+        <div class="col-4 text-end">
+            <a asp-controller="project" asp-action="Create" class="btn btn-dark">
+                <i class="bi bi-plus-circle-fill"></i> Create Category
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+    @foreach(var obj in Model){
+        
+    
+        <div class="border shadow-lg border-info p-3 mt-4" style="border-radius: 25px;" onclick="location.href = '@Url.Action("detail","Project",new { id = obj.projectId})'">
+            <div class="mb-3">
+                <h3>@obj.ProjectName</h3>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-6">
+                @{
+                    var user = await UserManager.FindByIdAsync(obj.EmployerId);
+                 }
+                    created by : @user.UserName
+                </div>
+                <div class="col-6 text-end">
+                    @obj.CreateTime
+                </div>
+            </div>
+            <hr />
+            <div class="mb-3">
+                @obj.Description;
+            </div>
+            <div class="mb-3">
+                @obj.tags
+            </div>
+        </div>
+    }
+    </div>
+</div>
+
+
