@@ -46,7 +46,7 @@ namespace Trial3.Controllers
                 .Collection(e => e.UserProjects)
                 .Query()
                 .ToList();
-            //var project = _Db.Projects.Where(r => r.EmployerId == employer.Id);
+            //var project = _Db.Projects.Where(r => r.EmployerId == id);
             return View(userProject);
         }
         [HttpGet]
