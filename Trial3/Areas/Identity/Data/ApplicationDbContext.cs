@@ -49,9 +49,31 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(x => x.UserReviews)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<Messages>()
+            .HasOne(x => x.MessageBox)
+            .WithMany(x => x.Messages)
+            .HasForeignKey(x => x.MessageBoxId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<MessageBox>()
+            .HasOne(x => x.Employer)
+            .WithMany(x => x.EmployerMessageBoxes)
+            .HasForeignKey(x => x.EmployerId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<MessageBox>()
+            .HasOne(x => x.Freelancer)
+            .WithMany(x => x.FreelacerMessageBoxes)
+            .HasForeignKey(x => x.FreelancerId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
     }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Bid> Bids { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<MessageBox> MessageBoxes { get; set; }
+    public DbSet<Messages> Messages { get; set; }
 
 }

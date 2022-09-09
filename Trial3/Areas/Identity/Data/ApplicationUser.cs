@@ -50,6 +50,8 @@ public class ApplicationUser : IdentityUser
     public List<Project>? AcceptedProject { get; set; }
     public List<Bid>? Bids { get; set; }
     public List<Review>? UserReviews { get; set; }
+    public List<MessageBox>? EmployerMessageBoxes { get; set; }
+    public List<MessageBox>? FreelacerMessageBoxes { get; set; }
 
 }
 
