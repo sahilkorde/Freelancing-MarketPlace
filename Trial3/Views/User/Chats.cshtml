@@ -1,0 +1,22 @@
+﻿@model IEnumerable<MessageBox>
+@{
+    ViewData["Title"] = "Chats";
+}
+
+<h1>Chats</h1>
+
+<div class="container-fluid">
+    <div class="card-group col-md-4">
+        @foreach(var i in Model){
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header fs-3">@i.Title</div>
+                <div class="row">
+                        <p class="col-6">@i.EmployerId</p>
+                        <p class=" col-6 text-muted text-end">@i.Created</p>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

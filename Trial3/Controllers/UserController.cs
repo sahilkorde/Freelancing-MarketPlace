@@ -48,15 +48,52 @@ namespace Trial3.Controllers
                 return View("Error");
             }
             Bid bid = _Db.Bids.Find(bidId);
+            if(bid.status == "Accepted")
+            {
+                return RedirectToAction("index", "home");
+            }
             bid.status = "Accepted";
             var projectid = bid.ProjectId;
             _Db.Bids.Update(bid);
             _Db.SaveChanges();
             Project project = _Db.Projects.Find(projectid);
             project.FreelancerId = bid.FreelancerId;
+            project.Status = "Accepted";
             _Db.Projects.Update(project);
             _Db.SaveChanges();
+            MessageBox messagebox = new MessageBox
+            {
+                FreelancerId = project.FreelancerId,
+                EmployerId = project.EmployerId,
+                ProjectId = project.projectId,
+                Status = "Active",
+                Title = "messageBox"
+            };
+            _Db.MessageBoxes.Add(messagebox);
+            _Db.SaveChanges();
             return RedirectToAction("UserBids");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Chats()
+        {
+
+            var employer = await _userManager.GetUserAsync(User);
+            List<MessageBox>? EmessageBoxes = _Db.Entry(employer)
+                .Collection(e => e.EmployerMessageBoxes)
+                .Query()
+                .ToList();
+            List<MessageBox>? FmessageBoxes = _Db.Entry(employer)
+                .Collection(e => e.FreelacerMessageBoxes)
+                .Query()
+                .ToList();
+            List<MessageBox>? messageBoxes = new();
+            messageBoxes = EmessageBoxes.ToList();
+            foreach(var i in FmessageBoxes)
+            {
+                messageBoxes.Add(i);
+            }
+            return View(messageBoxes);
         }
     }
 }
