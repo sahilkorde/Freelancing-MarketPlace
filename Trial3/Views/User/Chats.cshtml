@@ -5,18 +5,34 @@
 
 <h1>Chats</h1>
 
-<div class="container-fluid">
-    <div class="card-group col-md-4">
+<div class="container">
+    <div class="row" >
+        <div class="overflow-scroll col-md-4" style="height:70vh">
         @foreach(var i in Model){
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header fs-3">@i.Title</div>
-                <div class="row">
+            <div class="card">
+                <div class="card-body border">
+                    <div class="card-header fs-3">@i.Title</div>
+                    <div class="row border">
                         <p class="col-6">@i.EmployerId</p>
                         <p class=" col-6 text-muted text-end">@i.Created</p>
+                    </div>
                 </div>
             </div>
-        </div>
         }
+        </div>
+        <div class="bg-dark border col-md-8" style="height:70vh">
+            <div class="row justify-content-center mb-2 bg-dark">
+                <div class="col-6 fs-4 px-5 text-light">Title</div>
+                <div class="col-6 text-light text-muted text-end">@DateTime.Now</div>
+            </div>
+            <div id="Messages" class="p-5 bg-light" style="height:50vh" >
+                
+            </div>
+            <div class="row px-3 pt-4">
+                <textarea class="col-9"></textarea>
+                <div class="btn btn-danger col-3"> Send</div>
+            </div>
+        </div>
     </div>
+    
 </div>
