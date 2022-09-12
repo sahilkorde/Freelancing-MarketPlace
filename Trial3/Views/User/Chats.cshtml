@@ -1,4 +1,8 @@
-﻿@model IEnumerable<MessageBox>
+﻿@model ChatView
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@using Trial3.Models
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Chats";
 }
@@ -7,11 +11,11 @@
 
 <div class="container">
     <div class="row" >
-        <div class="overflow-scroll col-md-4" style="height:70vh">
-        @foreach(var i in Model){
+        <div class="overflow-auto col-md-4" style="height:70vh">
+        @foreach(var i in Model.messageBoxes){
             <div class="card">
                 <div class="card-body border">
-                    <div class="card-header fs-3">@i.Title</div>
+                    <a asp-controller="User" asp-action="Chats" asp-route-messageBoxId="@i.Id" class="card-header fs-3">@i.Id</a>
                     <div class="row border">
                         <p class="col-6">@i.EmployerId</p>
                         <p class=" col-6 text-muted text-end">@i.Created</p>
@@ -20,19 +24,39 @@
             </div>
         }
         </div>
-        <div class="bg-dark border col-md-8" style="height:70vh">
+        @if(Model.messageBox == null)
+        {
+            
+        }
+        else
+        {
+            <div class="bg-dark border col-md-8" style="height:70vh">
             <div class="row justify-content-center mb-2 bg-dark">
                 <div class="col-6 fs-4 px-5 text-light">Title</div>
                 <div class="col-6 text-light text-muted text-end">@DateTime.Now</div>
             </div>
-            <div id="Messages" class="p-5 bg-light" style="height:50vh" >
+            
+                <div id="Messages" class="p-5 bg-light overflow-auto" style="height:50vh" >
+                    @foreach(var message in Model.messageBox.Messages)
+                    {
+                        var freelancer = await UserManager.FindByIdAsync(message.SenderId);
+                        <p>@freelancer.UserName : @message.Message </p>
+                        <p> @message.CreateTime</p>
+                        <hr />
+                    }
+                </div>
+            
+            <div class="row px-3 pt-4">
+                <form asp-controller="User" asp-action="createMessage">
+                    <input hidden name="messageid" value="@Model.messageBox.Id">
+                    <textarea name="Message" class="col-9"></textarea>
+                    <button type="submit" class="btn btn-danger col-3"> Send</button>
+                </form>
                 
             </div>
-            <div class="row px-3 pt-4">
-                <textarea class="col-9"></textarea>
-                <div class="btn btn-danger col-3"> Send</div>
-            </div>
         </div>
+        }
+        
     </div>
     
 </div>

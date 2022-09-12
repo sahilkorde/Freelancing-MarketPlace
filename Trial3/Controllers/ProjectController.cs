@@ -32,6 +32,18 @@ namespace Trial3.Controllers
             return View(project);
         }
 
+        [HttpPost]
+        public IActionResult Index(string Term)
+        {
+            var project = _Db.Projects.Where(x => x.ProjectName == Term || x.tags.Contains(Term));
+            return View();
+        }
+        public IActionResult Index(int minbug, int maxbug, string tags)
+        {
+            var project = _Db.Projects.Where(x => x.CreateTime > DateTime.Now && x.tags.Contains(tags));
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> UserProject(string? id)
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Trial3.Areas.Identity.Data;
 using Trial3.Models;
 
@@ -15,7 +16,7 @@ namespace Trial3.Controllers
             _userManager = userManager;
             _Db = db;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
@@ -75,7 +76,7 @@ namespace Trial3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Chats()
+        public async Task<IActionResult> Chats(int? messageBoxId)
         {
 
             var employer = await _userManager.GetUserAsync(User);
@@ -86,14 +87,44 @@ namespace Trial3.Controllers
             List<MessageBox>? FmessageBoxes = _Db.Entry(employer)
                 .Collection(e => e.FreelacerMessageBoxes)
                 .Query()
+                .Where(p => p.Status =="Active")
                 .ToList();
-            List<MessageBox>? messageBoxes = new();
-            messageBoxes = EmessageBoxes.ToList();
-            foreach(var i in FmessageBoxes)
+            var user = _Db.Users
+                .Include(x => x.EmployerMessageBoxes)
+                .Include(x => x.FreelacerMessageBoxes)
+                .FirstOrDefault(x => x.Id == employer.Id);
+            MessageBox messagebox = _Db.MessageBoxes
+                .Include(c => c.Messages)
+                .FirstOrDefault(x => x.Id == messageBoxId);
+            
+            List<MessageBox>? messageBoxes1 = new();
+            messageBoxes1 = EmessageBoxes.ToList();
+            foreach (var i in FmessageBoxes)
             {
-                messageBoxes.Add(i);
+                messageBoxes1.Add(i);
             }
-            return View(messageBoxes);
+            ChatView messageboxandmessages = new ChatView
+            {
+                messageBoxes = messageBoxes1,
+                messageBox = messagebox
+            };
+            return View(messageboxandmessages);
+        }
+
+        public async Task<IActionResult> CreateMessage(String Message, int messageid)
+        {
+            var sender = await _userManager.GetUserAsync(User);
+            Messages message = new Messages
+            {
+                Message = Message,
+                MessageBoxId = messageid,
+                SenderId = sender.Id,
+                CreateTime = DateTime.Now,
+                Status = "Send"
+            };
+            _Db.Messages.Add(message);
+            _Db.SaveChanges();
+            return RedirectToAction("Chats", new { messageBoxId = messageid});
         }
     }
 }
