@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Trial3.Areas.Identity.Data;
+using Trial3.Models;
 
 namespace Trial3.Areas.Identity.Pages.Account
 {
@@ -26,6 +27,7 @@ namespace Trial3.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
@@ -33,12 +35,14 @@ namespace Trial3.Areas.Identity.Pages.Account
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
@@ -97,6 +101,10 @@ namespace Trial3.Areas.Identity.Pages.Account
             public DateTime DOB { get; set; }
 
             [Required]
+            [Display(Name = "Role")]
+            public String Role { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -148,7 +156,24 @@ namespace Trial3.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    //await _userManager.AddToRoleAsync(user, Input.Role);
+                    if (!await _roleManager.RoleExistsAsync(UserRoles.Employer))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(UserRoles.Employer));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(UserRoles.Frellancer))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(UserRoles.Frellancer));
+                    }
+                    switch (Input.Role)
+                    {
+                        case UserRoles.Frellancer:
+                            await _userManager.AddToRoleAsync(user, UserRoles.Frellancer);
+                            break;
+                        case UserRoles.Employer:
+                            await _userManager.AddToRoleAsync(user, UserRoles.Employer);
+                            break;
+                    }
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

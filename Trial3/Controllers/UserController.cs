@@ -6,6 +6,7 @@ using Trial3.Models;
 
 namespace Trial3.Controllers
 {
+    
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -16,9 +17,21 @@ namespace Trial3.Controllers
             _userManager = userManager;
             _Db = db;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? username)
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var appuser = _Db.Entry(user)
+                .Collection(e => e.UserReviews)
+                .Query()
+                .ToList();
+            int userproject = _Db.Projects.Count(x => x.EmployerId == user.Id);
+            int userbids = _Db.Bids.Count(x => x.FreelancerId == user.Id);
+            UserView userview = new UserView { 
+                user = user,
+                userProject = userproject,
+                userbids = userbids
+            };
+            return View(userview);
         }
 
         public async Task<IActionResult> UserProject()

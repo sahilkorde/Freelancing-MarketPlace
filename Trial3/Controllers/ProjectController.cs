@@ -7,7 +7,7 @@ using Trial3.Models;
 
 namespace Trial3.Controllers
 {
-    [Authorize]
+    [Authorize (Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
     public class ProjectController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -31,7 +31,7 @@ namespace Trial3.Controllers
 
             return View(project);
         }
-
+/*
         [HttpPost]
         public IActionResult Index(string Term)
         {
@@ -42,7 +42,7 @@ namespace Trial3.Controllers
         {
             var project = _Db.Projects.Where(x => x.CreateTime > DateTime.Now && x.tags.Contains(tags));
             return View();
-        }
+        }*/
 
         [HttpGet]
         public async Task<IActionResult> UserProject(string? id)

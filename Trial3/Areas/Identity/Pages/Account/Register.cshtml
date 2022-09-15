@@ -1,4 +1,5 @@
 ﻿@page
+@using Trial3.Models;
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -36,6 +37,11 @@
                 <input asp-for="Input.DOB" class="form-control" />
                 <label asp-for="Input.DOB"></label>
                 <span asp-validation-for="Input.DOB" class="text-danger"></span>
+            </div>
+            <div class="">
+                <input type="radio" asp-for="Input.Role" value="@UserRoles.Frellancer" class="" />Freelancer
+                <input type="radio" asp-for="Input.Role" value="@UserRoles.Employer" class="" />Employer
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
             </div>
             <div class="form-floating">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
