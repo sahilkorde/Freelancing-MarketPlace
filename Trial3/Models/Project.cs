@@ -20,6 +20,10 @@ namespace Trial3.Models
         public DateTime? CreateTime { get; set; } = DateTime.Now;
         public string? EmployerId { get; set; }
         public string? FreelancerId { get; set; }
+        public int? TotalBids { get; set; }
+        public int? MinBid { get; set; }
+        public int? MaxBid { get; set; }
+        public int? AvgBid { get; set; }
         public List<Bid>? ProjectBids { get; set; }
         public virtual ApplicationUser? Employer { get; set; }
         public virtual ApplicationUser? Freelancer { get; set; }

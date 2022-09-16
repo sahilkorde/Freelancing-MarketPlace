@@ -55,6 +55,8 @@ namespace Trial3.Controllers
                 .ToList();
             return View(userBids);
         }
+
+        //[HttpPost]
         public async Task<IActionResult> Acceptbid(int bidId)
         {
             if (bidId == 0 || bidId == null)
@@ -89,7 +91,7 @@ namespace Trial3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Chats(int? messageBoxId)
+        public async Task<IActionResult> Chat(int messageBoxId)
         {
 
             var employer = await _userManager.GetUserAsync(User);
@@ -124,6 +126,35 @@ namespace Trial3.Controllers
             return View(messageboxandmessages);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Chats()
+        {
+
+            var employer = await _userManager.GetUserAsync(User);
+            List<MessageBox>? EmessageBoxes = _Db.Entry(employer)
+                .Collection(e => e.EmployerMessageBoxes)
+                .Query()
+                .ToList();
+            List<MessageBox>? FmessageBoxes = _Db.Entry(employer)
+                .Collection(e => e.FreelacerMessageBoxes)
+                .Query()
+                .Where(p => p.Status == "Active")
+                .ToList();
+            var user = _Db.Users
+                .Include(x => x.EmployerMessageBoxes)
+                .Include(x => x.FreelacerMessageBoxes)
+                .FirstOrDefault(x => x.Id == employer.Id);
+
+            List<MessageBox>? messageBoxes1 = new();
+            messageBoxes1 = EmessageBoxes.ToList();
+            foreach (var i in FmessageBoxes)
+            {
+                messageBoxes1.Add(i);
+            }
+            return View(messageBoxes1);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> CreateMessage(String Message, int messageid)
         {
             var sender = await _userManager.GetUserAsync(User);
@@ -137,7 +168,7 @@ namespace Trial3.Controllers
             };
             _Db.Messages.Add(message);
             _Db.SaveChanges();
-            return RedirectToAction("Chats", new { messageBoxId = messageid});
+            return RedirectToAction("Chat", new { messageBoxId = messageid});
         }
     }
 }

@@ -7,7 +7,7 @@ using Trial3.Models;
 
 namespace Trial3.Controllers
 {
-    [Authorize (Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
+    
     public class ProjectController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -45,6 +45,7 @@ namespace Trial3.Controllers
         }*/
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public async Task<IActionResult> UserProject(string? id)
         {
             if (id == null)
@@ -81,12 +82,14 @@ namespace Trial3.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public async Task<IActionResult> Create(Project project)
         {
             if (ModelState.IsValid)
@@ -112,6 +115,7 @@ namespace Trial3.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult Edit(int? projId)
         {            
             if(projId == null || projId == 0)
@@ -129,6 +133,7 @@ namespace Trial3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult Edit(Project project)
         {
             if (!ModelState.IsValid)
@@ -141,6 +146,7 @@ namespace Trial3.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult MakeBid(string? projectid)
         {
             if (projectid == null)
@@ -152,6 +158,7 @@ namespace Trial3.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public async Task<IActionResult> MakeBid(Bid bid)
         {
             if (ModelState.IsValid)
