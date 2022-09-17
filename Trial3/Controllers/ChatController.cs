@@ -33,7 +33,7 @@ namespace Trial3.Controllers
         public async Task<IActionResult> LeavRoom(string connectionid, int chatId)
         {
             string chatidstring = chatId.ToString();
-            _chat.Groups.RemoveFromGroupAsync(connectionid, chatidstring);
+            await _chat.Groups.RemoveFromGroupAsync(connectionid, chatidstring);
             return Ok();
         }
 
