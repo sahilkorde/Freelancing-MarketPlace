@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Trial3.Areas.Identity.Data;
 
@@ -11,9 +12,10 @@ using Trial3.Areas.Identity.Data;
 namespace Trial3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220918083422_addbidenddate")]
+    partial class addbidenddate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,7 +274,7 @@ namespace Trial3.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Bids", (string)null);
+                    b.ToTable("Bids");
                 });
 
             modelBuilder.Entity("Trial3.Models.MessageBox", b =>
@@ -312,7 +314,7 @@ namespace Trial3.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("MessageBoxes", (string)null);
+                    b.ToTable("MessageBoxes");
                 });
 
             modelBuilder.Entity("Trial3.Models.Messages", b =>
@@ -347,7 +349,7 @@ namespace Trial3.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Trial3.Models.Project", b =>
@@ -406,7 +408,7 @@ namespace Trial3.Migrations
 
                     b.HasIndex("FreelancerId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Trial3.Models.Review", b =>
@@ -439,7 +441,7 @@ namespace Trial3.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -18,6 +18,7 @@ namespace Trial3.Models
         [Required]
         public string? tags { get; set; }
         public DateTime? CreateTime { get; set; } = DateTime.Now;
+        public DateTime BidEndDate { get; set; }
         public string? EmployerId { get; set; }
         public string? FreelancerId { get; set; }
         public int? TotalBids { get; set; }

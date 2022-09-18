@@ -16,7 +16,6 @@
         </div>
         <div asp-validation-summary="All"></div>
         <div class="mb-3" hidden>
-            <label asp-for="projectId">Name</label>
             <input asp-for="projectId" class="form-control fs-1 text-info" value="@Model.projectId"/>
             <span asp-validation-for="projectId" class="text-danger"></span>
         </div>
@@ -31,18 +30,18 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Status">status</label>
-            <input asp-for="Status" class="form-control" />
-            <span asp-validation-for="Status" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="tags">status</label>
+            <label asp-for="tags">tags</label>
             <input asp-for="tags" class="form-control" />
+            <input asp-for="Status" hidden value="Active"/>
             <span asp-validation-for="tags" class="text-danger"></span>
         </div>
+        <div class="mb-3">
+            <label asp-for="BidEndDate">BidEndDate</label>
+            <input asp-for="BidEndDate" class="form-control" />
+            <span asp-validation-for="BidEndDate" class="text-danger"></span>
+        </div>
         <div class="mb-3" hidden>
-            <label asp-for="EmployerId">EmployerId</label>
-            <input asp-for="EmployerId" class="form-control" value="@UserManager.GetUserId(User)"/>
+            <input asp-for="EmployerId" class="form-control"/>
             <span asp-validation-for="EmployerId" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-success" style="width:150px">Update</button>
@@ -50,3 +49,7 @@
     </div>
 </form>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -27,12 +27,13 @@
     <div class="container">
         
         <div class="row">
-            <div class="col-3 border">
-                <form class="" method="get" asp-controller="Project" asp-action="Index">
-                    <input type="text" class="mb-1 rounded-3 border-1" name="term" placeholder="filter Search" />
-                    <input class="col-5 rounded-3 border-1" type="number" name="minbudget" placeholder="minimum budget"/>
-                    <input class="col-5 rounded-3 border-1" type="number" name="maxbudget" placeholder="maximum budget"/>
-                    <input class="mt-2 mb-3 rounded-3 border-1" type="text" name="tags" placeholder="tags" /><br />
+            <div class="col-3 border" style="hight:50%">
+                <form class="" method="get" asp-controller="Project" asp-action="Index" >
+                    <input type="text" class=" p-2 mb-2 rounded-3 border-1" name="term" placeholder="filter Search" />
+                    <input class="col-5 p-2 rounded-3 border-1" type="number" name="minbudget" placeholder="minimum budget"/>
+                    <input class="col-5 p-2 rounded-3 border-1" type="number" name="maxbudget" placeholder="maximum budget"/>
+                    <input class="mt-2 p-2 rounded-3 border-1" type="text" name="tags" placeholder="tags" />
+                    <input class="p-2 mt-2 mb-3 rounded-3 border-1" type="date" name="deadline" placeholder="Dead Line" /><br />
                     <button type="submit" class="btn btn-success">Apply</button>
                 </form>
             </div>
@@ -55,14 +56,24 @@
                         </div>
                         <div class="col-6 text-end">
                             @obj.CreateTime
+                            end at : @obj.BidEndDate
                         </div>
                     </div>
                     <hr />
                     <div class="mb-3">
-                        @obj.Description;
+                        @{
+                            int startIndex = 0;
+                            int length = 150;
+                            string value = @obj.Description;
+                            string shortdisc = value.Substring(startIndex, length);
+                        }
+                        @shortdisc
                     </div>
                     <div class="mb-3">
-                        @obj.tags
+                        <div class="row">
+                            <div class="col-md-8">@obj.tags</div>
+                            <div class="col-md-4 text-success">@obj.Status</div>
+                        </div>
                     </div>
                 </div>
             }

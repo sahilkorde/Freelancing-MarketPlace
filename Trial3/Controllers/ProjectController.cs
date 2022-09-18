@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel;
 using Microsoft.AspNetCore.Mvc;
 using Trial3.Areas.Identity.Data;
 using Trial3.Models;
@@ -9,7 +10,7 @@ using System.Security.Claims;
 
 namespace Trial3.Controllers
 {
-    
+
     public class ProjectController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -25,36 +26,42 @@ namespace Trial3.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IActionResult> Index(string? term, int? minbudget, int? maxbudget, string? tags)
+        public IActionResult Index(string? term, int? minbudget, int? maxbudget, string? tags, DateTime? deadline)
         {
             if(term == null && minbudget == null && maxbudget == null && tags == null)
             {
-                var project = _Db.Projects.AsNoTracking().ToList();
-                return View(project);
+                if(deadline == null)
+                {
+                    var projects = _Db.Projects.Where(x => x.BidEndDate > DateTime.Now).AsNoTracking().ToList();
+                    return View(projects);
+                }
+                var projectd = _Db.Projects
+                    .Where(x => x.BidEndDate == deadline)
+                    .AsNoTracking()
+                    .ToList();
+                return View(projectd);
             }
-            var projects = _Db.Projects
-                .Where(x => x.ProjectName.Contains(term) || x.tags.Contains(term) || x.tags.Contains(tags)).AsNoTracking().ToList();
-
-            return View(projects);
+            //var Datetime = ((DateTime)deadline).Date;
+            if(deadline == null)
+            {
+                var projects = _Db.Projects
+                    .Where(x => (x.ProjectName.Contains(term) || x.tags.Contains(term) || x.tags.Contains(tags)) && x.BidEndDate > DateTime.Now)
+                    .AsNoTracking().
+                    ToList();
+                return View(projects);
+            }
+            var project = _Db.Projects
+                .Where(x => (x.ProjectName.Contains(term) || x.tags.Contains(term) || x.tags.Contains(tags)) && x.BidEndDate == deadline)
+                .AsNoTracking().
+                ToList();
+            return View(project);
         }
-/*
-        [HttpPost]
-        public IActionResult Index(string Term)
-        {
-            var project = _Db.Projects.Where(x => x.ProjectName == Term || x.tags.Contains(Term));
-            return View();
-        }
-        public IActionResult Index(int minbug, int maxbug, string tags)
-        {
-            var project = _Db.Projects.Where(x => x.CreateTime > DateTime.Now && x.tags.Contains(tags));
-            return View();
-        }*/
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public async Task<IActionResult> UserProject(string? id)
         {
-            if (id == null)
+            if (id == null || id == "")
             {
                 return RedirectToAction("index");
             }
@@ -104,16 +111,7 @@ namespace Trial3.Controllers
                 ViewBag.CStatus = true;
                 return View(project);
             }
-            Project proj = new Project
-            {
-                ProjectName = project.ProjectName,
-                Description = project.Description,
-                Status = "Active",
-                tags = project.tags,
-                EmployerId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                CreateTime = DateTime.Now,
-            };
-            _Db.Projects.Add(proj);
+            _Db.Projects.Add(project);
             _Db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -124,7 +122,7 @@ namespace Trial3.Controllers
             {
                 return NotFound();
             }
-            var project = _Db.Projects.FindAsync(id);
+            var project = _Db.Projects.FindAsync(id).Result;
             return View(project);
         }
 
@@ -137,8 +135,7 @@ namespace Trial3.Controllers
                 return NotFound();
             }
             var project = _Db.Projects.Find(projId);
-            var id = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (id != project.EmployerId)
+            if (Getuserid() != project.EmployerId)
             {
                 return NotFound();
             }
@@ -212,7 +209,7 @@ namespace Trial3.Controllers
                 return NotFound();
             }
             Project project = await _Db.Projects.FindAsync(id);
-            if (project.EmployerId != Getuserid())
+            if (project == null || project.EmployerId != Getuserid())
             {
                 return NotFound();
             }
@@ -222,18 +219,22 @@ namespace Trial3.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = UserRoles.Employer + ", " + UserRoles.Frellancer)]
-        public IActionResult Delete(Project project)
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteProject(int id)
         {
-            if (project.EmployerId != Getuserid())
+            if (id == 0 || id == null)
             {
-                return NotFound();
+                ViewBag.status = "Failed to Delete Project";
+                return RedirectToAction("Index");
             }
-            if (project == null)
+            var project = await _Db.Projects.FindAsync(id);
+            if(project == null || project.EmployerId != Getuserid())
             {
                 ViewBag.status = "Failed to Delete Project";
                 return RedirectToAction("Index");
             }
             _Db.Projects.Remove(project);
+            await _Db.SaveChangesAsync();
             ViewBag.status = "Project Deleted Successfully";
             return RedirectToAction("Index");
         }

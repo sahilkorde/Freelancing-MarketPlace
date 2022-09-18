@@ -23,17 +23,22 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Status">status</label>
-            <input asp-for="Status" class="form-control" />
-            <span asp-validation-for="Status" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
             <label asp-for="tags">tags</label>
             <input asp-for="tags" class="form-control" />
+            <input asp-for="Status" hidden disable value="Active"/>
             <span asp-validation-for="tags" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="BidEndDate">BidEndDate</label>
+            <input asp-for="BidEndDate" class="form-control" />
+            <span asp-validation-for="BidEndDate" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-success" style="width:150px">Create</button>
         <a asp-controller="Project" asp-action="Index" class="btn btn-secondary" style="width:150px">Back To List</a>
     </div>
 </form>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
