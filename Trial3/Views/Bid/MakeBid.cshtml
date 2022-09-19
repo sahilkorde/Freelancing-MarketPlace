@@ -1,0 +1,51 @@
+﻿@model Bid
+@using Microsoft.AspNetCore.Identity
+@using Trial3.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "MakeBid";
+}
+
+<h1>MakeBid</h1>
+<div class="container-fluid">
+    <form method="post">
+    <div class="border border-5 bg-warning disabled p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="">Ceate Project</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="mb-3">
+            <label asp-for="BidPrice">Bid Price</label>
+            <input asp-for="BidPrice" class="form-control" />
+            <span asp-validation-for="BidPrice" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Discription">What I will do in this budget</label>
+            <input asp-for="Discription" class="form-control" />
+            <span asp-validation-for="Discription" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="status">status</label>
+            <input asp-for="status" class="form-control" />
+            <span asp-validation-for="status" class="text-danger"></span>
+        </div>
+        <div class="mb-3" hidden>
+            <label asp-for="ProjectId">Project Id</label>
+            <input asp-for="ProjectId" class="form-control" value="@ViewBag.project_id"/>
+            <span asp-validation-for="ProjectId" class="text-danger"></span>
+        </div>
+        <div class="mb-3" hidden>
+            <label asp-for="FreelancerId">Freelancer Id</label>
+            <input asp-for="FreelancerId" class="form-control" value="@UserManager.GetUserId(User)"/>
+            <span asp-validation-for="ProjectId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success" style="width:150px">Create</button>
+        <a asp-controller="Project" asp-action="Index" class="btn btn-secondary" style="width:150px">Back To List</a>
+    </div>
+</form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

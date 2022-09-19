@@ -68,6 +68,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(x => x.FreelancerId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.Entity<MessageBox>()
+            .HasOne(x => x.Project)
+            .WithOne(x => x.Messagebox)
+            .OnDelete(DeleteBehavior.NoAction);
 
     }
     public DbSet<Project> Projects { get; set; }

@@ -32,41 +32,66 @@
             @Model.Projects.Description
         </div>
     </div>
-    @if (Model.Bids.Any())
+    @if(Model.Projects.FreelancerId == null)
     {
-        <div class="border shodow-sm border-success p-3 mt-4">
-        <div class="mb-3">
-            @foreach(var bids in Model.Bids)
-            {
-                <div class="card">
-                    <div class="card-header border-1">
-                        Rs. <h4>@bids.BidPrice</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-text">
-                            @bids.Discription
-                            <br>
-                             @{
-                                var freelancer = await UserManager.FindByIdAsync(bids.FreelancerId);
-                              }
-                            by : @freelancer
-                        </div>
-                        <div>
-                            <a  asp-controller="user" asp-action="Acceptbid" asp-route-bidId="@bids.BidId" class="btn btn-primary"><i class="bi bi-trash"></i>Accept</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-    }
-    else
+        @if (Model.Bids.Any())
+        {
+        <div class="border shodow-sm border-success p-3 mt-4 mb-3">
+        @foreach(var bids in Model.Bids)
         {
             <div class="card">
+                <div class="card-header border-1">
+                    Rs. <h4>@bids.BidPrice</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        @bids.Discription<br>
+                        @{
+                            var freelancer = await UserManager.FindByIdAsync(bids.FreelancerId);
+                        }
+                        by : @freelancer
+                    </div>
+                    <div>
+                        <form method="post" asp-action="Acceptbid" asp-controller="bid">
+                            <input hidden name="BidId" value="@bids.BidId">
+                            <button type="submit">Accept Bid</button>
+                        </form>
+                        <a asp-controller="bid" asp-action="Acceptbid" asp-route-bidId="@bids.BidId" class="btn btn-primary"><i class="bi bi-trash"></i>Accept</a>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+        }
+        else
+        {
+        <div class="card">
             <div class="card-header">
                 No Bids Yet
             </div>
         </div>
         }
-    
+    }
+    else{
+    <div class="row">
+        <div class="col-md-6">
+            @{
+                var freelancer = await UserManager.FindByIdAsync(@Model.Projects.FreelancerId);
+                Bid bid = Model.Bids.FirstOrDefault(x => x.FreelancerId == Model.Projects.FreelancerId);
+            }
+            You already have Accepted Bid for this project of freelancer @freelancer
+            <div class="card">
+                <div class="card-header border-1">
+                    Rs. <h4>@bid.BidPrice</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        @bid.Discription<br>
+                        by : @freelancer
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    } 
 </div>

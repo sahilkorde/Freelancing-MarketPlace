@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace Trial3.Controllers
 {
-
+    [Authorize]
     public class ProjectController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -26,6 +26,7 @@ namespace Trial3.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        [AllowAnonymous]
         public IActionResult Index(string? term, int? minbudget, int? maxbudget, string? tags, DateTime? deadline)
         {
             if(term == null && minbudget == null && maxbudget == null && tags == null)
@@ -76,18 +77,23 @@ namespace Trial3.Controllers
             return View(userProject);
         }
         [HttpGet]
+        [Authorize]
+        [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult ProjectBidDetail(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
+            var project1 = _Db.Projects
+                .Include(x => x.Messagebox)
+                .Include(x => x.ProjectBids)
+                .FirstOrDefault(x => x.projectId == id);
             var project = _Db.Projects.Find(id);
             var projectbids = _Db.Entry(project)
                 .Collection(e => e.ProjectBids)
                 .Query()
                 .ToList();
-            //var bid = _Db.Bids.Where(r=>r.ProjectId==id);
             var projectbid = new ProjectBidView();
             projectbid.Projects = project;
             projectbid.Bids = projectbids;
@@ -111,11 +117,14 @@ namespace Trial3.Controllers
                 ViewBag.CStatus = true;
                 return View(project);
             }
+            project.EmployerId = Getuserid();
             _Db.Projects.Add(project);
             _Db.SaveChanges();
             return RedirectToAction("Index");
         }
+
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Detail(int? id)
         {
             if (id == null || id == 0)
@@ -155,49 +164,6 @@ namespace Trial3.Controllers
             _Db.Projects.Update(project);
             _Db.SaveChanges();
             return RedirectToAction("Index","Project");
-        }
-
-        [HttpGet]
-        [Authorize(Roles = UserRoles.Frellancer)]
-        public IActionResult MakeBid(string? projectid)
-        {
-            if (projectid == null)
-            {
-                return NotFound();
-            }
-            ViewBag.project_id = projectid;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = UserRoles.Frellancer)]
-        public async Task<IActionResult> MakeBid(Bid bid)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(bid);
-            }
-            var employer = await _userManager.GetUserAsync(User);
-            var projectid = bid.ProjectId;
-            var project = _Db.Projects.Find(projectid);
-            var projectbids = _Db.Entry(project)
-                .Collection(p => p.ProjectBids)
-                .Query()
-                .ToList();
-            //projectbids.FirstOrDefault(x => x.FreelancerId == bid.FreelancerId);
-            foreach (Bid bids in projectbids)
-            {
-                if (bids.FreelancerId == employer.Id)
-                {
-                    ViewBag.mbstatus = false;
-                    return RedirectToAction("index", "home");
-                }
-            }
-            _Db.Bids.Add(bid);
-            _Db.SaveChanges();
-            ViewBag.mbstatus = true;
-            return RedirectToAction("Index");
         }
 
         [HttpGet]
