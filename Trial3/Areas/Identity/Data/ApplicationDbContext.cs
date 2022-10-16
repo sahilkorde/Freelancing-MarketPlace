@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Trial3.Areas.Identity.Data;
 using Trial3.Models;
 
 namespace Trial3.Areas.Identity.Data;
@@ -12,7 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-    
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -42,7 +40,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(x => x.Project)
             .WithMany(x => x.ProjectBids)
             .HasForeignKey(x => x.ProjectId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Review>()
             .HasOne(x => x.User)
@@ -54,7 +52,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(x => x.MessageBox)
             .WithMany(x => x.Messages)
             .HasForeignKey(x => x.MessageBoxId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<MessageBox>()
             .HasOne(x => x.Employer)
@@ -71,7 +69,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<MessageBox>()
             .HasOne(x => x.Project)
             .WithOne(x => x.Messagebox)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
     }
     public DbSet<Project> Projects { get; set; }

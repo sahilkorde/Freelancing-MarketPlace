@@ -16,10 +16,10 @@ namespace Trial3.Models
         [Required]
         public string status { get; set; }
         public string? FreelancerId { get; set; }
-        [ForeignKey ("FreelancerId")]
+        [ForeignKey("FreelancerId")]
         public virtual ApplicationUser? Freelancer { get; set; }
         public int? ProjectId { get; set; }
-        [ForeignKey ("ProjectId")]
+        [ForeignKey("ProjectId")]
         public virtual Project? Project { get; set; }
 
 

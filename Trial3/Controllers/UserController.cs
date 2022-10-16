@@ -6,7 +6,7 @@ using Trial3.Models;
 
 namespace Trial3.Controllers
 {
-    
+
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _Db;
@@ -26,7 +26,8 @@ namespace Trial3.Controllers
                 .ToList();
             int userproject = _Db.Projects.Count(x => x.EmployerId == user.Id);
             int userbids = _Db.Bids.Count(x => x.FreelancerId == user.Id);
-            UserView userview = new UserView { 
+            UserView userview = new UserView
+            {
                 user = user,
                 userProject = userproject,
                 userbids = userbids
@@ -64,7 +65,7 @@ namespace Trial3.Controllers
                 return View("Error");
             }
             Bid bid = _Db.Bids.Find(bidId);
-            if(bid.status == "Accepted")
+            if (bid.status == "Accepted")
             {
                 return RedirectToAction("index", "home");
             }
@@ -102,7 +103,7 @@ namespace Trial3.Controllers
             List<MessageBox>? FmessageBoxes = _Db.Entry(employer)
                 .Collection(e => e.FreelacerMessageBoxes)
                 .Query()
-                .Where(p => p.Status =="Active")
+                .Where(p => p.Status == "Active")
                 .ToList();
             var user = _Db.Users
                 .Include(x => x.EmployerMessageBoxes)
@@ -111,7 +112,7 @@ namespace Trial3.Controllers
             MessageBox messagebox = _Db.MessageBoxes
                 .Include(c => c.Messages)
                 .FirstOrDefault(x => x.Id == messageBoxId);
-            
+
             List<MessageBox>? messageBoxes1 = new();
             messageBoxes1 = EmessageBoxes.ToList();
             foreach (var i in FmessageBoxes)
@@ -168,7 +169,7 @@ namespace Trial3.Controllers
             };
             _Db.Messages.Add(message);
             _Db.SaveChanges();
-            return RedirectToAction("Chat", new { messageBoxId = messageid});
+            return RedirectToAction("Chat", new { messageBoxId = messageid });
         }
     }
 }

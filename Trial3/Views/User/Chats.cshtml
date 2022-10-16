@@ -14,12 +14,10 @@
         <div class="overflow-auto col-md-4" style="height:70vh">
         @foreach(var i in Model){
             <div class="card">
-                <div class="card-body border">
-                    <a asp-controller="User" asp-action="Chat" asp-route-messageBoxId="@i.Id" class="card-header fs-3">@i.Id</a>
-                    <div class="row border">
-                        <p class="col-6">@i.EmployerId</p>
-                        <p class=" col-6 text-muted text-end">@i.Created</p>
-                    </div>
+                <div class="card-body border bg-dark">
+                    <i class="bi bi-person-circle text-white"></i>
+                    <a asp-controller="User" asp-action="Chat" asp-route-messageBoxId="@i.Id" class="fs-5 text-white">@i.Title</a>
+                    by <p class="text-white m-0">@i.Employer</p>
                 </div>
             </div>
         }

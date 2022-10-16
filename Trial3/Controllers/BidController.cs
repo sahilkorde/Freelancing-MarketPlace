@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Trial3.Areas.Identity.Data;
 using Trial3.Models;
-using System.Data.Entity;
-using System.Security.Claims;
 
 namespace Trial3.Controllers
 {
@@ -46,7 +45,7 @@ namespace Trial3.Controllers
                 return View(bid);
             }
             var projectid = bid.ProjectId;
-            Bid bids = _Db.Bids.FirstOrDefault(x => x.FreelancerId == Getuserid() && x.ProjectId == projectid);
+            Bid? bids = _Db.Bids.FirstOrDefault(x => x.FreelancerId == Getuserid() && x.ProjectId == projectid);
             if (bids != null)
             {
                 ViewBag.status = "You cant Bid on your own Project";
@@ -60,10 +59,11 @@ namespace Trial3.Controllers
                     return RedirectToAction("index", "home");
                 }
             }*/
+            bid.status = "Active";
             _Db.Bids.Add(bid);
             _Db.SaveChanges();
             ViewBag.mbstatus = true;
-            return RedirectToAction("Index","project");
+            return RedirectToAction("Index", "project");
         }
 
         [HttpPost]
@@ -75,8 +75,8 @@ namespace Trial3.Controllers
             {
                 return View("Error");
             }
-            Bid bid = _Db.Bids.Find(bidId);
-            if(bid == null)
+            Bid? bid = _Db.Bids.Find(bidId);
+            if (bid == null)
             {
                 return NotFound();
             }
@@ -84,11 +84,15 @@ namespace Trial3.Controllers
             {
                 return RedirectToAction("index", "home");
             }
-            bid.status = "Accepted";
             var projectid = bid.ProjectId;
+            Project? project = _Db.Projects.Find(projectid);
+            if (project == null || project.EmployerId != Getuserid())
+            {
+                return Unauthorized();
+            }
+            bid.status = "Accepted";
             _Db.Bids.Update(bid);
             _Db.SaveChanges();
-            Project project = _Db.Projects.Find(projectid);
             project.FreelancerId = bid.FreelancerId;
             project.Status = "Accepted";
             _Db.Projects.Update(project);
@@ -99,11 +103,11 @@ namespace Trial3.Controllers
                 EmployerId = project.EmployerId,
                 ProjectId = project.projectId,
                 Status = "Active",
-                Title = "messageBox"
+                Title = project.ProjectName
             };
             _Db.MessageBoxes.Add(messagebox);
             _Db.SaveChanges();
-            return RedirectToAction("UserBids", "user");
+            return RedirectToAction("ProjectBidDetail", "Project", new { id = projectid });
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Trial3.Hubs;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Trial3.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
+using Trial3.Hubs;
 using Trial3.Models;
 
 namespace Trial3.Controllers
@@ -14,14 +14,14 @@ namespace Trial3.Controllers
         private readonly ApplicationDbContext _Db;
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public ChatController( IHubContext<ChatHub> chat, ApplicationDbContext Db,UserManager<ApplicationUser> userManager)
+        public ChatController(IHubContext<ChatHub> chat, ApplicationDbContext Db, UserManager<ApplicationUser> userManager)
         {
             _chat = chat;
             _Db = Db;
             _userManager = userManager;
         }
 
-        [HttpPost ("[action]/{connectionid}/{chatId}")]
+        [HttpPost("[action]/{connectionid}/{chatId}")]
         public async Task<IActionResult> JoinChat(string connectionid, int chatId)
         {
             string chatidstring = chatId.ToString();

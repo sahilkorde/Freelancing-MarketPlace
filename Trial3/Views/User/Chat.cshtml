@@ -13,15 +13,25 @@
     <div class="row" >
         <div class="overflow-auto col-md-4" style="height:70vh">
         @foreach(var i in Model.messageBoxes){
-            <div class="card">
-                <div class="card-body border">
-                    <a asp-controller="User" asp-action="Chat" asp-route-messageBoxId="@i.Id" class="card-header fs-3">@i.Id</a>
-                    <div class="row border">
-                        <p class="col-6">@i.EmployerId</p>
-                        <p class=" col-6 text-muted text-end">@i.Created</p>
+            if(i.Id == Model.messageBox.Id){
+                <div class="card">
+                    <div class="card-body border bg-dark">
+                        <i class="bi bi-person-circle text-white"></i>
+                        <a asp-controller="User" asp-action="Chat" asp-route-messageBoxId="@i.Id" class="fs-5 text-white">@i.Title</a>
+                        by <p class="text-white m-0">@Model.messageBox.Employer</p>
                     </div>
                 </div>
-            </div>
+                }
+                else
+                {
+                    <div class="card">
+                        <div class="card-body border">
+                            <i class="bi bi-person-circle"></i>
+                            <a asp-controller="User" asp-action="Chat" asp-route-messageBoxId="@i.Id" class="fs-5 text-black">@i.Title</a>
+                        </div>
+                    </div>
+                }
+                
         }
         </div>
         @if(Model.messageBox == null)
@@ -30,19 +40,36 @@
         }
         else
         {
-            <div class="bg-dark border col-md-8" style="height:70vh">
+            <div class="m-0 bg-dark border col-md-8" style="height:80vh">
             <div class="row justify-content-center mb-2 bg-dark">
-                <div class="col-6 fs-4 px-5 text-light">Title</div>
-                <div class="col-6 text-light text-muted text-end">@DateTime.Now</div>
+                <div class="col-lg-7 fs-4 text-light">@Model.messageBox.Title</div>
+                <a asp-controller="Project" asp-action="detail" asp-route-id="@Model.messageBox.ProjectId" class="col-lg-3 text-dark text-muted text-end">View Project detail</a>
             </div>
             
-                <div id="Messages" class="p-5 bg-light overflow-auto" style="height:50vh" >
+                <div id="Messages" class="p-5 bg-light overflow-auto col" style="height:50vh" >
                     @foreach(var message in Model.messageBox.Messages)
                     {
                         var freelancer = await UserManager.FindByIdAsync(message.SenderId);
-                        <p>@freelancer.UserName : @message.Message </p>
-                        <p> @message.CreateTime</p>
-                        <hr />
+                        if(@freelancer.UserName == @UserManager.GetUserName(User))
+                        {
+                             <div class="text-end">
+                                <p>@freelancer.UserName</p>
+                                <p>@message.Message</p>
+                                <p> @message.CreateTime</p>
+                                <hr />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="">
+                                <p>@freelancer.UserName</p>
+                                <p>@message.Message</p>
+                                <p> @message.CreateTime</p>
+                                <hr />
+                            </div>
+                        }
+                        
+                       
                     }
                 </div>
             

@@ -2,13 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 using Trial3.Areas.Identity.Data;
 
 namespace Trial3.Areas.Identity.Pages.Account.Manage
@@ -71,7 +68,7 @@ namespace Trial3.Areas.Identity.Pages.Account.Manage
             public Gender Gender { get; set; }
             [Required]
             [DataType(DataType.Text)]
-            [StringLength(1000,ErrorMessage ="Description Cant Exides limit of 1000 character and less than 50 character", MinimumLength =50)]
+            [StringLength(1000, ErrorMessage = "Description Cant Exides limit of 1000 character and less than 50 character", MinimumLength = 50)]
             public string Description { get; set; }
             [PersonalData]
             public Profession? Profession { get; set; }

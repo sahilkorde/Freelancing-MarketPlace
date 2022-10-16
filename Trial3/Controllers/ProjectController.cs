@@ -3,10 +3,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Trial3.Areas.Identity.Data;
-using Trial3.Models;
 using System.Data.Entity;
 using System.Security.Claims;
+using Trial3.Areas.Identity.Data;
+using Trial3.Models;
 
 namespace Trial3.Controllers
 {
@@ -29,9 +29,9 @@ namespace Trial3.Controllers
         [AllowAnonymous]
         public IActionResult Index(string? term, int? minbudget, int? maxbudget, string? tags, DateTime? deadline)
         {
-            if(term == null && minbudget == null && maxbudget == null && tags == null)
+            if (term == null && minbudget == null && maxbudget == null && tags == null)
             {
-                if(deadline == null)
+                if (deadline == null)
                 {
                     var projects = _Db.Projects.Where(x => x.BidEndDate > DateTime.Now).AsNoTracking().ToList();
                     return View(projects);
@@ -43,7 +43,7 @@ namespace Trial3.Controllers
                 return View(projectd);
             }
             //var Datetime = ((DateTime)deadline).Date;
-            if(deadline == null)
+            if (deadline == null)
             {
                 var projects = _Db.Projects
                     .Where(x => (x.ProjectName.Contains(term) || x.tags.Contains(term) || x.tags.Contains(tags)) && x.BidEndDate > DateTime.Now)
@@ -85,15 +85,18 @@ namespace Trial3.Controllers
             {
                 return NotFound();
             }
-            var project1 = _Db.Projects
-                .Include(x => x.Messagebox)
-                .Include(x => x.ProjectBids)
-                .FirstOrDefault(x => x.projectId == id);
             var project = _Db.Projects.Find(id);
+            if (project == null || project.EmployerId != Getuserid())
+            {
+                return Redirect("/Identity/Account/AccessDenied"); ;
+            }
             var projectbids = _Db.Entry(project)
                 .Collection(e => e.ProjectBids)
                 .Query()
                 .ToList();
+            var promsgbox = _Db.Entry(project)
+                .Reference(x => x.Messagebox)
+                .Query();
             var projectbid = new ProjectBidView();
             projectbid.Projects = project;
             projectbid.Bids = projectbids;
@@ -138,18 +141,18 @@ namespace Trial3.Controllers
         [HttpGet]
         [Authorize(Roles = UserRoles.Frellancer + ", " + UserRoles.Employer)]
         public IActionResult Edit(int? projId)
-        {            
-            if(projId == null || projId == 0)
+        {
+            if (projId == null || projId == 0)
             {
                 return NotFound();
             }
             var project = _Db.Projects.Find(projId);
-            if (Getuserid() != project.EmployerId)
+            if (project == null || Getuserid() != project.EmployerId)
             {
-                return NotFound();
+                Redirect("/Identity/Account/AccessDenied"); ;
             }
             return View(project);
-                
+
         }
 
         [HttpPost]
@@ -161,20 +164,24 @@ namespace Trial3.Controllers
             {
                 return View(project);
             }
+            if (project.EmployerId != Getuserid())
+            {
+                Redirect("/Identity/Account/AccessDenied"); ;
+            }
             _Db.Projects.Update(project);
             _Db.SaveChanges();
-            return RedirectToAction("Index","Project");
+            return RedirectToAction("Index", "Project");
         }
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Employer + ", " + UserRoles.Frellancer)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(id == 0 || id == null)
+            if (id == 0 || id == null)
             {
                 return NotFound();
             }
-            Project project = await _Db.Projects.FindAsync(id);
+            Project? project = await _Db.Projects.FindAsync(id);
             if (project == null || project.EmployerId != Getuserid())
             {
                 return NotFound();
@@ -186,18 +193,18 @@ namespace Trial3.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = UserRoles.Employer + ", " + UserRoles.Frellancer)]
         [ActionName("Delete")]
-        public async Task<IActionResult> DeleteProject(int id)
+        public async Task<IActionResult> DeleteProject(int? id)
         {
             if (id == 0 || id == null)
             {
-                ViewBag.status = "Failed to Delete Project";
+                ViewBag.status = "Oops Something Went Wrong, Unable to Delete Project";
                 return RedirectToAction("Index");
             }
             var project = await _Db.Projects.FindAsync(id);
-            if(project == null || project.EmployerId != Getuserid())
+            if (project == null || project.EmployerId != Getuserid())
             {
                 ViewBag.status = "Failed to Delete Project";
-                return RedirectToAction("Index");
+                return Redirect("/Identity/Account/AccessDenied"); ;
             }
             _Db.Projects.Remove(project);
             await _Db.SaveChangesAsync();

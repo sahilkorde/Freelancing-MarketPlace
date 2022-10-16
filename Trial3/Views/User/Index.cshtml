@@ -16,7 +16,7 @@
             <p class="text-muted mb-1">@Model.user.UserName</p>
             <p class="text-muted mb-4">@Model.user.Profession</p>
             <div class="d-flex justify-content-center mb-2">
-              <a class="btn btn-primary">Edit</a>
+              <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-primary">Edit</a>
               <button type="button" class="btn btn-outline-primary ms-1">Message</button>
             </div>
           </div>

@@ -9,7 +9,7 @@ namespace Trial3.Models
         [Key]
         public int Id { get; set; }
         public string? UserReview { get; set; }
-        [Range(0,5,ErrorMessage ="Star Should be between 0 to 5")]
+        [Range(0, 5, ErrorMessage = "Star Should be between 0 to 5")]
         public int? Stars { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public string? CreatorId { get; set; }

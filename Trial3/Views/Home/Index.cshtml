@@ -3,6 +3,69 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p></a>.</p>
+
+
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/img/1.jpeg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="~/img/2.jpeg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="~/img/3.jpeg" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev " type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon " aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="row pt-4">
+        <div class="col-6">
+            <div class="card text-white bg-primary mb-3 ">
+                <h2 class="card-header bg-white text-primary">Freelancer</h2>
+                <div class="card-body">
+                    <h4 class="card-title">How does it work?</h4>
+                    <h5 class="card-text text-start">
+                        1.  Browse for a project.<br />
+                        2.  Choose the perfect job that suits you.<br />
+                        3.  Write your best bid.<br />
+                        4.  Deliver the work and earn money.<br />
+                    </h5>
+                    <a asp-controller="Project" asp-action="Index" class="btn btn-info col-4">Browse Projects</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+
+            <div class="card text-white bg-primary mb-3">
+                <h2 class="card-header bg-white text-primary">Employer</h2>
+                <div class="card-body">
+                    <h4 class="card-title">How does it work?</h4>
+                    <h5 class="card-text text-start">
+                        1.  Post a project.<br />
+                        2.  Choose the perfect freelancer.<br />
+                        3.  Get the work done.<br />
+                        4.  Pay when you’re satisfied.<br />
+                    </h5>
+                    <a asp-controller="Project" asp-action="Create" class="btn btn-info col-4">Post a Project</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
