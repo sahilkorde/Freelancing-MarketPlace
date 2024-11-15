@@ -100,10 +100,10 @@
 
         connection.on("recieveMessage", function(data) {
             console.log(data);
-            var message = document.createElement("p");
+            var message = document.createElement("pre");
             var date = document.createElement("p");
             var line = document.createElement("hr");
-            var usermessage = data.sender + " : " + data.msg;
+            var usermessage = data.sender + " :\n " + data.msg;
             var datetime = new Date(data.time).tolocal
             message.appendChild(document.createTextNode(usermessage));
             date.appendChild(document.createTextNode(data.time));
